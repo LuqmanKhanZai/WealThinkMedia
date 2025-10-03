@@ -1,0 +1,407 @@
+/* reset */
+.wrap{
+	width: 99.5%;
+	height: auto;
+	background: #fff;
+	border-radius: 5px;
+}
+/*#24b8af light;*/
+/*#14625d*/
+/*#0b5ba9*/
+.left{
+	width:75%;
+	height:135px;
+	padding:5px;
+	float: left;
+	/*border-bottom: 2px solid #0b5ba9;*/
+}
+.left .logo{
+	width: 280px;
+	height: 135px;
+	float: left;
+	box-shadow: 1px 1px 5px -0.25px rgba(0, 0, 0, 0.5);
+}
+.left .logo img{
+	width: 100%;
+	height: 100%;	
+}
+.left h4{
+	text-transform: uppercase;
+	font-family:times,roman;
+	font-size:17px;
+	line-height:30px;
+	color: #fff;
+	letter-spacing: 1px;
+	background:#0b5ba9;
+	text-align: center;
+	margin-left:300px;
+}
+.left p{
+	font-family:times,roman;
+	background:#b0d0ee;
+	text-align: center;
+	margin-left:300px;
+	margin-top:-15px;
+	line-height:20px;
+	font-weight: 500px;
+}
+.left p:nth-child(3){
+	margin-top:-5px;
+	line-height:25px;
+}
+
+
+
+/*RIGHT STYLE*/
+.right{
+	width:20%;
+	height:135px;
+	padding:5px;
+	float: left;
+	/*border-bottom: 2px solid #0b5ba9;*/
+
+}
+.right h4{
+	text-align: center;
+	margin-top:0px;
+	letter-spacing: 4px;
+	color: #0b5ba9;
+	text-transform: uppercase;
+	font-family:Agency FB;
+	font-size:25px;
+	margin-top:-60px;
+}
+.right h5{
+	text-align: center;
+	margin-top:0px;
+	letter-spacing: 2px;
+	color: #0b5ba9;
+	text-transform: uppercase;
+	font-family:Agency FB;
+	font-size:20px;
+}
+.right p{
+	text-align: center;
+	margin-top:0px;
+	/*letter-spacing: 2px;*/
+	/*background: #0b5ba9;*/
+	text-transform: uppercase;
+	font-family:Agency FB;
+	font-size:14px;
+	padding:5px;
+	font-weight: bold;
+}
+.right p:nth-child(2){
+	margin-top:-10px;
+	/*display: none;*/
+}
+
+/*CUSTOMER ND INVOIOCE DETAIL SECTION */
+.left2{
+	width:40%;
+	height:150px;
+	padding:5px;
+	float: left;
+	/*border-bottom: 2px solid lightgray;*/
+}
+
+.left2 h5{
+	margin-top: 2px;
+	line-height:25px;
+	text-align: center;
+	color: #fff;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-size:18px;
+	background:#0b5ba9;
+}
+
+.left2 .heading{
+	margin-top:-20px;
+	width:100px;
+	height: 50px;
+	float: left;
+}
+.left2 .heading h6{
+	margin-top: 2px;
+	line-height:25px;
+	text-align: left;
+	color: #000;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing:1px;
+	font-size:13px;
+	margin-bottom:3px;
+	background:#b0d0ee;
+	padding-left:10px;
+	border-bottom: 2px solid gray;
+
+}
+.left2 .custum{
+	margin-top:-20px;
+	width:210px;
+	height: 50px;
+	float: left;
+	margin-left:10px;
+}
+.left2 .custum h6{
+	margin-top: 2px;
+	line-height:25px;
+	text-align: left;
+	color: #000;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing:0.3px;
+	font-size:12px;
+	margin-bottom:3px;
+	background:#b0d0ee;
+	border-bottom: 2px solid gray;
+	padding-left:10px;
+}
+
+.right2{
+	width:56.5%;
+	height:150px;
+	padding:5px;
+	float: left;
+	border-bottom: 2px solid lightgray;
+
+}
+.right2 .inviocedetails{
+	width: 230px;
+	height: 100px;
+	/*background: red;*/
+	float: left;
+}
+
+.right2 .inviocedetails h5{ 
+	margin-top: 2px;
+	line-height:25px;
+	text-align: center;
+	color: #fff;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-size:15px;
+	background:#0b5ba9;
+}
+.right2 .inviocedetails .heading{
+	margin-top:-16px;
+	width:90px;
+	height:auto;
+	float: left;
+}
+.right2 .inviocedetails .heading h6{
+	margin-top: 2px;
+	line-height:25px;
+	text-align: left;
+	color: #000;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing:1px;
+	font-size:13px;
+	margin-bottom:3px;
+	background:rgb(241,243,244);
+	padding-left:10px;
+
+}
+.right2 .inviocedetails .custum{
+	margin-top:-16px;
+	width:130px;
+	height: 50px;
+	float: left;
+	margin-left:10px;
+}
+.right2 .inviocedetails .custum h6{
+	margin-top: 2px;
+	line-height:25px;
+	text-align: left;
+	color: #000;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing:0.3px;
+	font-size:12px;
+	margin-bottom:3px;
+	background:rgb(241,243,244);
+	padding-left:10px;
+}
+
+/*+++++++++++++++++++++++++++++++++++++*/
+
+.right2 .account{
+	width: 210px;
+	height: 100px;
+	float: left;
+	margin-left: 10px;
+}
+
+.right2 .account h5{ 
+	margin-top: 2px;
+	line-height:25px;
+	text-align: center;
+	color: #fff;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-size:15px;
+	background:#0b5ba9;
+}
+.right2 .account .heading{
+	margin-top:-16px;
+	width:90px;
+	height:auto;
+	float: left;
+}
+.right2 .account .heading h6{
+	margin-top: 2px;
+	line-height:25px;
+	text-align: left;
+	color: #000;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing:1px;
+	font-size:12px;
+	margin-bottom:3px;
+	background:rgb(241,243,244);
+	padding-left:10px;
+
+}
+.right2 .account .custum{
+	margin-top:-16px;
+	width:113px;
+	height: 50px;
+	float: left;
+	margin-left:5px;
+}
+.right2 .account .custum h6{
+	margin-top: 2px;
+	line-height:25px;
+	text-align: left;
+	color: #000;
+	font-family:Agency FB;
+	text-transform: uppercase;
+	letter-spacing:0.3px;
+	font-size:12px;
+	margin-bottom:3px;
+	background:rgb(241,243,244);
+	padding-left:10px;
+}
+
+/*TABLE*/
+
+
+
+.table{
+	width: 98%;
+	height: auto;
+	margin-top:10px;
+	padding:5px;
+}
+.table .tablein{
+		background: #0b5ba9;
+}
+.table table{
+	width: 100%;
+}
+.table table thead tr th{
+	line-height: 20px;
+	color: #fff;
+	font-family:times roman;
+	font-size:12px;
+	text-align: center;
+	text-transform: uppercase;
+	background:#0b5ba9;
+}
+
+.table table tbody tr td{
+	line-height: 24px;
+	font-size:12px;
+	color: #000;
+	font-family:times roman;
+	text-align: center;
+}
+.table table tbody tr:nth-child(odd){
+	background:rgb(241,243,244);
+}
+
+/*FIXED HEADER AND FOOTER*/
+/* .page-header{
+	position: fixed;top: 5px;display: none;
+} */
+
+ 
+ .footer{
+ 	width:100%;
+ 	height: 50px;
+ 	text-align: center;
+ }
+.footer p{
+ 	background:#b0d0ee;
+	width: 100%;
+	line-height: 30px;
+	border-top:3px solid  #0b5ba9;
+}
+
+.footer p small{
+	font-weight:bold;
+	margin-right:5px;
+	margin-left:5px;
+	color:#0b5ba9;
+}
+.footer p span{
+	font-family:times,roman;
+	font-size:20px;
+}
+.papa{
+	position: fixed;
+	bottom:0px;
+	display: none;
+}
+
+
+
+/* page */
+
+html { font: 16px/1 'Open Sans', sans-serif; overflow: auto; padding: 0.5in; }
+html { background: #fff; cursor: default; padding-top: 20px; overflow: auto;}
+
+body { box-sizing: border-box; height:auto; margin: 0 auto; overflow: auto; width: 8.5in; }
+body {  border-radius: 1px; box-shadow: 0 0 5px -0.25px rgba(0, 0, 0, 01); padding:5px; }
+
+@media print {
+	* { -webkit-print-color-adjust: exact; }
+	html { background: none; padding: 0; }
+	body { box-shadow: none; }
+	thead {display: table-header-group;} 
+   tfoot {display: table-footer-group;}
+    /* .table-head{
+	 	height: 10px;
+		border: 1px solid red;
+	 } */
+	 .table-footer{
+		height:50px;
+	}
+	.footer p{
+		padding-left:30px;
+		padding-right:30px;
+	}
+	/* .page-header{
+		display: none;
+	} */
+	/* .page-header-design{
+		display: none;
+	} */
+	.page-footer{
+		display: block;
+	}
+	.papa{
+		display: block;
+	}
+	.design{
+		display: none;
+	}
+
+}
+
+@page { margin: 0; }
