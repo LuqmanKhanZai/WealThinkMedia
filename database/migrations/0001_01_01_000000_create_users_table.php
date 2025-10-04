@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('account_type');
-            
+            $table->string('contact')->nullable();
             $table->string('role_id')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->rememberToken();

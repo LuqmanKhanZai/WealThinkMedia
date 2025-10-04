@@ -24,17 +24,8 @@ class User extends Authenticatable
         'email',
         'password',
         'account_type',
+        'contact',
         'role_id',
-        'from_time',
-        'to_time',
-        'monday_login', 
-        'tuesday_login',
-        'wednesday_login',
-        'thursday_login',
-        'friday_login',
-        'saturday_login',
-        'sunday_login',
-        'holiday_login',
         'status',
     ];
 
