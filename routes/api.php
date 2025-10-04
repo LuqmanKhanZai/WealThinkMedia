@@ -14,4 +14,4 @@ Route::middleware(['auth'])->group(function () {
 //     return $request->user();
 // });
 
-Route::get('product-lsit', [FronEndController::class, 'product_list']);
+Route::get('product-list', [FronEndController::class, 'product_list']);
