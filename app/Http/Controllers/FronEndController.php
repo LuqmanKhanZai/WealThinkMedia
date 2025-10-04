@@ -117,15 +117,11 @@ class FronEndController extends Controller
                 ]);
             }
         }
-
-
         return response()->json([
             'msg' => 'Order placed successfully',
             'status' => 200,
             'orderId' => $order->id,
         ]);
-
-       
 
     }
 
