@@ -51,8 +51,10 @@ class FronEndController extends Controller
         // validation
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'items' => 'required|array|min:1',
-            'items.*.item_id' => 'required|exists:items,id',
+            'items.*.item_id'  => 'required|exists:items,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.price'    => 'required|numeric|min:0',
+             'amount'    => 'required|numeric|min:1',
         ]);
 
         $user = User::find($request->user_id);
@@ -98,7 +100,7 @@ class FronEndController extends Controller
             'user_id' => $request->user_id,
             'stripe_payment_intent_id' => 24124,
             'stripe_customer_id' => 14214,
-            'amount' => 100,
+            'amount' => $request->amount,
             'currency' =>'USD',
             'status' => 'succeeded', // succeeded, requires_payment_method, etc.
             'products' => json_encode($cartItems),
@@ -111,9 +113,9 @@ class FronEndController extends Controller
             if ($item) {
                 OrderToItem::create([
                     'order_id' => $order->id,
-                    'item_id' => $item->id,
+                    'item_id'  => $item->id,
                     'quantity' => $itemRequest['quantity'],
-                    'price' => $item->price,
+                    'price'    => $itemRequest['price'], // snapshot price
                 ]);
             }
         }
