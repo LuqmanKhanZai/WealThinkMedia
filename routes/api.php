@@ -15,3 +15,4 @@ Route::middleware(['auth'])->group(function () {
 // });
 
 Route::get('product-list', [FronEndController::class, 'product_list']);
+Route::post('add-user', [FronEndController::class, 'add_user']);
