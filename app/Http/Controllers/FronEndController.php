@@ -54,7 +54,7 @@ class FronEndController extends Controller
             'items.*.item_id'  => 'required|exists:items,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price'    => 'required|numeric|min:0',
-             'amount'    => 'required|numeric|min:1',
+            'amount'    => 'required|numeric|min:1',
         ]);
 
         $user = User::find($request->user_id);
