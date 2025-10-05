@@ -235,7 +235,7 @@ class FronEndController extends Controller
                 'stripe_customer_id' => $paymentIntent->customer,
                 'amount' => $request->amount,
                 'currency' => $paymentIntent->currency,
-                'status' => 'succeeded', // succeeded, requires_payment_method, etc.
+                'status' => $paymentIntent->status, // succeeded, requires_payment_method, etc.
                 'products' => null,
                 'paid_at' => now(),
             ]);
