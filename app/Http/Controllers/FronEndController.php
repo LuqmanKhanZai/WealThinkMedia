@@ -221,10 +221,17 @@ class FronEndController extends Controller
 
 
         try {
+
+            $customer = \Stripe\Customer::create([
+                'name' => $getUser->name,
+                'email' => $getUser->email,
+            ]);
+
             $paymentIntent = PaymentIntent::create([
                 'amount' => $amount * 100, // convert to cents
                 'currency' => 'usd',
-                'customer' => $getUser->createOrGetStripeCustomer()->id,
+                // 'customer' => $getUser->createOrGetStripeCustomer()->id,
+                'customer' => $customer->id,
                 'automatic_payment_methods' => ['enabled' => true],
             ]);
 
@@ -232,7 +239,7 @@ class FronEndController extends Controller
             $order = Order::create([
                 'user_id' => $request->user_id,
                 'stripe_payment_intent_id' => $paymentIntent->id,
-                'stripe_customer_id' => $paymentIntent->customer,
+                'stripe_customer_id' => $customer->id,
                 'amount' => $request->amount,
                 'currency' => $paymentIntent->currency,
                 'status' => $paymentIntent->status, // succeeded, requires_payment_method, etc.
