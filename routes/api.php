@@ -19,6 +19,9 @@ Route::post('add-user', [FronEndController::class, 'add_user']);
 Route::post('add-order', [FronEndController::class, 'add_order']);
 
 Route::post('create-checkout-session', [FronEndController::class, 'create_checkout_session']);
+
+Route::middleware('auth:sanctum')->post('payment-intent', [FronEndController::class, 'stripe_check']);
+
 // Route::post('webhook', [FronEndController::class, 'handle_webhook']);
 // Route::get('order-success', [FronEndController::class, 'order_success']);
 // Route::get('order-cancel', [FronEndController::class, 'order_cancel']);

@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderToItem;
 use App\Models\Product\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FronEndController extends Controller
 {
@@ -19,41 +20,94 @@ class FronEndController extends Controller
         return response()->json($items);
     }
 
+    // public function add_user(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'contact' => 'required|string|max:15',
+    //     ]);
+
+    //     $checkUser = User::where('email', $request->email)->first();    
+    //     if ($checkUser) {
+    //     $token = Auth::user()->createToken('huma-app')->plainTextToken;
+    //        return response()->json([
+    //             'msg' => 'User already added',
+    //             'status' => 200,
+    //             'userId' => $checkUser->id,
+    //         ]);
+    //     }
+        
+    //     // create user
+    //     $user = User::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'contact' => $request->contact,
+    //         'password' => bcrypt($request->email), // default password
+    //         'account_type' => 'User',
+    //     ]);
+    //     if (!$user) {
+    //         return response()->json(['msgErr' => 'Failed to add user'], 500);
+    //     }
+    //     return response()->json([
+    //         'msg' => 'User added successfully',
+    //         'status' => 200,
+    //         'userId' => $user->id,
+    //         'token' => $user->createToken('wealthink')->plainTextToken,
+    //     ]);
+    // }
+
+
     public function add_user(Request $request)
     {
-        // validation
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users,email',
             'contact' => 'required|string|max:15',
         ]);
 
-        $checkUser = User::where('email', $request->email)->first();    
+        // Check if user exists
+        $checkUser = User::where('email', $request->email)->first();
+
         if ($checkUser) {
-           return response()->json([
-                'msg' => 'User already added',
+            // Generate token for existing user
+            $token = $checkUser->createToken('wealthink')->plainTextToken;
+
+            return response()->json([
+                'msg' => 'User already exists',
                 'status' => 200,
                 'userId' => $checkUser->id,
+                'token' => $token,
             ]);
         }
-        
-        // create user
+
+        // Create new user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'contact' => $request->contact,
-            'password' => bcrypt($request->email), // default password
+            'password' => bcrypt($request->email), // default password same as email
             'account_type' => 'User',
         ]);
+
         if (!$user) {
-            return response()->json(['msgErr' => 'Failed to add user'], 500);
+            return response()->json([
+                'msgErr' => 'Failed to add user',
+                'status' => 500,
+            ], 500);
         }
+
+        // Generate token for new user
+        $token = $user->createToken('wealthink')->plainTextToken;
+
         return response()->json([
             'msg' => 'User added successfully',
             'status' => 200,
             'userId' => $user->id,
+            'token' => $token,
         ]);
     }
+
 
     public function add_order(Request $request)
     {
