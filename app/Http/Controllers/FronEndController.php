@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Stripe\Stripe;
 use App\Models\User;
 use App\Models\Order;
+use Stripe\PaymentIntent;
 use App\Models\OrderToItem;
 use App\Models\Product\Item;
 use Illuminate\Http\Request;
@@ -113,7 +115,7 @@ class FronEndController extends Controller
     {
         // validation
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id'  => 'required|exists:users,id',
             'items.*.item_id'  => 'required|exists:items,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price'    => 'required|numeric|min:0',
@@ -124,6 +126,7 @@ class FronEndController extends Controller
         if (!$user) {
             return response()->json(['msgErr' => 'User not found'], 404);
         }
+
 
         // $paymentIntent = \Stripe\PaymentIntent::create([
         //     'amount' => $amount * 100, // in cents
@@ -190,66 +193,75 @@ class FronEndController extends Controller
 
     }
 
-    public function create_checkout_session(Request $request)
+    public function stripe_check(Request $request)
     {
+
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'items' => 'required|array|min:1',
-            'items.*.id' => 'required|exists:items,id',
+            'user_id'  => 'required|exists:users,id',
+            'items.*.item_id'  => 'required|exists:items,id',
             'items.*.quantity' => 'required|integer|min:1',
+            'items.*.price'    => 'required|numeric|min:0',
+            'amount'    => 'required|numeric|min:1',
         ]);
 
-        $user = User::find($request->user_id);
-        if (!$user) {
-            return response()->json(['msgErr' => 'User not found'], 404);
+        $user = $request->user_id; // Must be authenticated (using Laravel Sanctum or Passport)
+        $getUser = User::find($user);
+        
+        if (!$getUser) {
+            return response()->json(['error' => 'User not found'], 404);
         }
 
-        $lineItems = [];
-        $totalAmount = 0;
+        $amount = $request->amount;
 
-        foreach ($request->items as $itemRequest) {
-            $item = Item::find($itemRequest['id']);
-            if ($item) {
-                $amount = $item->price * $itemRequest['quantity'];
-                $totalAmount += $amount;
-
-                $lineItems[] = [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => $item->item_name,
-                            'description' => $item->description,
-                        ],
-                        'unit_amount' => intval($item->price * 100), // amount in cents
-                    ],
-                    'quantity' => $itemRequest['quantity'],
-                ];
-            }
+        if (!$amount || !is_numeric($amount)) {
+            return response()->json(['error' => 'Invalid amount'], 400);
         }
 
-        if (empty($lineItems)) {
-            return response()->json(['msgErr' => 'No valid items found'], 400);
-        }
+        Stripe::setApiKey(config('services.stripe.secret'));
 
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
         try {
-            $checkoutSession = \Stripe\Checkout\Session::create([
-                'payment_method_types' => ['card'],
-                'line_items' => $lineItems,
-                'mode' => 'payment',
-                'customer_email' => $user->email,
-                'success_url' => env('APP_URL') . '/success?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => env('APP_URL') . '/cancel',
+            $paymentIntent = PaymentIntent::create([
+                'amount' => $amount * 100, // convert to cents
+                'currency' => 'usd',
+                'customer' => $getUser->createOrGetStripeCustomer()->id,
+                'automatic_payment_methods' => ['enabled' => true],
             ]);
 
+       
+            $order = Order::create([
+                'user_id' => $request->user_id,
+                'stripe_payment_intent_id' => $paymentIntent->id,
+                'stripe_customer_id' => $paymentIntent->customer,
+                'amount' => $request->amount,
+                'currency' => $paymentIntent->currency,
+                'status' => 'succeeded', // succeeded, requires_payment_method, etc.
+                'products' => null,
+                'paid_at' => now(),
+            ]);
+
+
+            foreach ($request->items as $itemRequest) {
+                $item = Item::find($itemRequest['item_id']);
+                if ($item) {
+                    OrderToItem::create([
+                        'order_id' => $order->id,
+                        'item_id'  => $item->id,
+                        'quantity' => $itemRequest['quantity'],
+                        'price'    => $itemRequest['price'], // snapshot price
+                    ]);
+                }
+            }
+           
+
             return response()->json([
-                'checkout_url' => $checkoutSession->url,
-                'session_id' => $checkoutSession->id,
-                'total_amount' => $totalAmount,
+                'clientSecret' => $paymentIntent->client_secret,
+                'msg' => 'Payment intent created successfully',
             ]);
         } catch (\Exception $e) {
-            return response()->json(['msgErr' => 'Failed to create checkout session: ' . $e->getMessage()], 500);
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
