@@ -197,7 +197,7 @@ class FronEndController extends Controller
     {
 
         $request->validate([
-            'user_id'  => 'required|exists:users,id',
+            'user_id'  => 'required',
             'items.*.item_id'  => 'required|exists:items,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price'    => 'required|numeric|min:0',
