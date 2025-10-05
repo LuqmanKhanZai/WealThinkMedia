@@ -129,42 +129,41 @@
                                     class="nav-label">City</span> </a>
                     </li> --}}
                     <li class="{{ Request::is(['item', 'item/*']) ? 'active' : '' }}">
-                            <a href="{{ route('item.index') }}"><i class="fa fa-th-large"></i> <span
-                                    class="nav-label">Item Setup</span> </a>
+                        <a href="{{ route('item.index') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Item Setup</span> </a>
+                    </li>
+                    <li class="{{ Request::is(['order', 'order/*']) ? 'active' : '' }}">
+                        <a href="{{ route('order.index') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Orders</span> </a>
                     </li>
 
-
-                    
-
-                        @canany(['user.list', 'user_privialages.list', 'role.list', 'role_privialages.list'])
-                            <li class="{{ Request::is(['user/*', 'role/*', 'role_privilages/*', 'user_privilages/*']) ? 'active' : '' }}">
-                                <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">User Management</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level collapse">
-                                    @can('user.list')
-                                        <li
-                                            class="{{ Request::is(['user/index', 'user/create']) ? 'active' : '' }}">
-                                            <a href="{{ route('user.index') }}">Manage Users</a>
-                                        </li>
-                                    @endcan
-                                    @can('user_privialages.list')
-                                        <li
-                                            class="{{ Request::is(['user_privilages/index', 'user_privilages/create']) ? 'active' : '' }}">
-                                            <a href="{{ route('user_privilages.index') }}">User Privileges</a>
-                                        </li>
-                                    @endcan
-                                    @can('role.list')
-                                        <li class="{{ Request::is(['role/index', 'role/create']) ? 'active' : '' }}"><a
-                                                href="{{ route('role.index') }}">User Roles</a></li>
-                                    @endcan
-                                    @can('role_privialages.list')
-                                        <li
-                                            class="{{ Request::is(['role_privilages/index', 'role_privilages/create']) ? 'active' : '' }}">
-                                            <a href="{{ route('role_privilages.index') }}">Roles Privileges</a>
-                                        </li>
-                                    @endcan
-                                </ul>
-                            </li>
-                        @endcanany
+                    @canany(['user.list', 'user_privialages.list', 'role.list', 'role_privialages.list'])
+                        <li class="{{ Request::is(['user/*', 'role/*', 'role_privilages/*', 'user_privilages/*']) ? 'active' : '' }}">
+                            <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">User Management</span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse">
+                                @can('user.list')
+                                    <li
+                                        class="{{ Request::is(['user/index', 'user/create']) ? 'active' : '' }}">
+                                        <a href="{{ route('user.index') }}">Manage Users</a>
+                                    </li>
+                                @endcan
+                                @can('user_privialages.list')
+                                    <li
+                                        class="{{ Request::is(['user_privilages/index', 'user_privilages/create']) ? 'active' : '' }}">
+                                        <a href="{{ route('user_privilages.index') }}">User Privileges</a>
+                                    </li>
+                                @endcan
+                                @can('role.list')
+                                    <li class="{{ Request::is(['role/index', 'role/create']) ? 'active' : '' }}"><a
+                                            href="{{ route('role.index') }}">User Roles</a></li>
+                                @endcan
+                                @can('role_privialages.list')
+                                    <li
+                                        class="{{ Request::is(['role_privilages/index', 'role_privilages/create']) ? 'active' : '' }}">
+                                        <a href="{{ route('role_privilages.index') }}">Roles Privileges</a>
+                                    </li>
+                                @endcan
+                            </ul>
+                        </li>
+                    @endcanany
 
             
 

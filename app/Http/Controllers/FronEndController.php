@@ -25,8 +25,17 @@ class FronEndController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'contact' => 'nullable|string|max:15',
+            'contact' => 'required|string|max:15',
         ]);
+
+        $checkUser = User::where('email', $request->email)->first();    
+        if ($checkUser) {
+           return response()->json([
+                'msg' => 'User already added',
+                'status' => 200,
+                'userId' => $checkUser->id,
+            ]);
+        }
         
         // create user
         $user = User::create([
