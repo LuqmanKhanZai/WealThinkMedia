@@ -204,9 +204,8 @@ class FronEndController extends Controller
             'amount'    => 'required|numeric|min:1',
         ]);
 
-        $user = $request->user_id; // Must be authenticated (using Laravel Sanctum or Passport)
-        $getUser = User::find($user);
-        
+        $getUser = User::find($request->user_id);
+
         if (!$getUser) {
             return response()->json(['error' => 'User not found'], 404);
         }
@@ -226,16 +225,16 @@ class FronEndController extends Controller
             //     'name' => $getUser->name,
             //     'email' => $getUser->email,
             // ]);
-            if (!$user->stripe_customer_id) {
+            if (!$getUser->stripe_customer_id) {
                 $customer = \Stripe\Customer::create([
-                    'name' => $user->name,
-                    'email' => $user->email,
+                    'name' => $getUser->name,
+                    'email' => $getUser->email,
                 ]);
 
-                $user->stripe_customer_id = $customer->id;
-                $user->save();
+                $getUser->stripe_customer_id = $customer->id;
+                $getUser->save();
             } else {
-                $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
+                $customer = \Stripe\Customer::retrieve($getUser->stripe_customer_id);
             }
 
             $paymentIntent = PaymentIntent::create([
@@ -276,7 +275,6 @@ class FronEndController extends Controller
             return response()->json([
                 'clientSecret' => $paymentIntent->client_secret,
                 'msg' => 'Payment intent created successfully',
-                ''
             ]);
         } catch (\Exception $e) {
             return response()->json([
