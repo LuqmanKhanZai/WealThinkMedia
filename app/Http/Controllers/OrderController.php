@@ -34,10 +34,10 @@ class OrderController extends Controller
              }
             return $orderItem;
         });
-        return response()->json([
-            'order' => $order,
-            'items' => $items,
-        ]);
+        // return response()->json([
+        //     'order' => $order,
+        //     'items' => $items,
+        // ]);
         return view('admin.order.print', get_defined_vars());
     }
     
