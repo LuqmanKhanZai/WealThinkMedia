@@ -404,6 +404,10 @@ class FronEndController extends Controller
                 'payment_method' => $paymentMethodId,
                 'off_session' => false, // user present
                 'confirm' => true,
+                'automatic_payment_methods' => [
+                    'enabled' => true,
+                    'allow_redirects' => 'never', // 🚀 this fixes your error
+                ],
             ]);
 
             // ✅ Save order (optional, recommended)
