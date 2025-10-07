@@ -19,3 +19,4 @@ Route::post('add-order', [FronEndController::class, 'add_order']);
 Route::post('create-checkout-session', [FronEndController::class, 'create_checkout_session']);
 
 Route::middleware('auth:sanctum')->post('payment-intent', [FronEndController::class, 'stripe_check']);
+Route::middleware('auth:sanctum')->post('payment-intent-second', [FronEndController::class, 'second_stripe_check']);

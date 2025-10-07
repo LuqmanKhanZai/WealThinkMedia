@@ -283,6 +283,152 @@ class FronEndController extends Controller
         }
     }
 
+    // public function second_stripe_check(Request $request)
+    // {
+    //     $request->validate([
+    //         'user_id'  => 'required',
+    //         'payment_method' => 'required',
+    //         'amount'    => 'required|numeric|min:1',
+    //     ]);
+
+    //     $paymentMethodId = $request->payment_method;
+
+    //     if (!$paymentMethodId) {
+    //         return response()->json(['error' => 'Payment method ID is required'], 400);
+    //     }
+
+    //     Stripe::setApiKey(config('services.stripe.secret'));
+    //     $getUser = User::find($request->user_id);
+    //     try {
+    //         // // Attach payment method to customer (if not already)
+    //         // $customer = \Stripe\Customer::create([
+    //         //     'name' => $getUser->name,
+    //         //     'email' => $getUser->email,
+    //         // ]);
+
+    //         $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
+    //         $paymentMethod->attach(['customer' => $getUser->stripe_customer_id]);
+
+    //         // \Stripe\PaymentMethod::attach($paymentMethodId, [
+    //         //     'customer' => $getUser->stripe_customer_id,
+    //         // ]);
+
+    //         // Create PaymentIntent using the saved payment method
+    //         $paymentIntent = PaymentIntent::create([
+    //             'amount' => $request->amount * 100,
+    //             'currency' => 'usd',
+    //             'customer' => $getUser->stripe_customer_id,
+    //             'payment_method' => $paymentMethodId,
+    //             'off_session' => false, // true if recurring/subscription style
+    //             'confirm' => true, // charge immediately
+    //         ]);
+
+    //         return response()->json([
+    //             'clientSecret' => $paymentIntent->client_secret,
+    //             'msg' => 'Payment successful',
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+
+
+    //     // $getUser = User::find($request->user_id);
+
+    //     // if (!$getUser) {
+    //     //     return response()->json(['error' => 'User not found'], 404);
+    //     // }
+
+    //     // if (!$getUser->stripe_customer_id) {
+    //     //     return response()->json(['error' => 'Stripe customer ID not found for user'], 400);
+    //     // }
+
+    //     // Stripe::setApiKey(config('services.stripe.secret'));
+
+    //     // try {
+    //     //     // Attach the payment method to the customer
+    //     //     $paymentMethod = \Stripe\PaymentMethod::retrieve($request->payment_method_id);
+    //     //     $paymentMethod->attach(['customer' => $getUser->stripe_customer_id]);
+
+    //     //     // Update user's default payment method
+    //     //     $customer = \Stripe\Customer::retrieve($getUser->stripe_customer_id);
+    //     //     $customer->invoice_settings = ['default_payment_method' => $paymentMethod->id];
+    //     //     $customer->save();
+
+    //     //     // Save payment method ID to user model
+    //     //     $getUser->stripe_payment_method_id = $paymentMethod->id;
+    //     //     $getUser->save();
+
+    //     //     return response()->json([
+    //     //         'msg' => 'Payment method attached and saved successfully',
+    //     //         'payment_method_id' => $paymentMethod->id,
+    //     //     ]);
+    //     // } catch (\Exception $e) {
+    //     //     return response()->json([
+    //     //         'error' => $e->getMessage(),
+    //     //     ], 500);
+    //     // }
+    // }
+
+    public function second_stripe_check(Request $request)
+    {
+        $request->validate([
+            'user_id'  => 'required|exists:users,id',
+            'payment_method' => 'required|string',
+            'amount'    => 'required|numeric|min:1',
+        ]);
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $getUser = User::find($request->user_id);
+
+        if (!$getUser || !$getUser->stripe_customer_id) {
+            return response()->json(['error' => 'Stripe customer not found for this user'], 404);
+        }
+
+        $paymentMethodId = $request->payment_method;
+
+        try {
+            // ✅ Retrieve payment method
+            $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
+
+            // ✅ Attach to customer if not already
+            if ($paymentMethod->customer != $getUser->stripe_customer_id) {
+                $paymentMethod->attach(['customer' => $getUser->stripe_customer_id]);
+            }
+
+            // ✅ Create and confirm PaymentIntent
+            $paymentIntent = PaymentIntent::create([
+                'amount' => $request->amount * 100, // in cents
+                'currency' => 'usd',
+                'customer' => $getUser->stripe_customer_id,
+                'payment_method' => $paymentMethodId,
+                'off_session' => false, // user present
+                'confirm' => true,
+            ]);
+
+            // ✅ Save order (optional, recommended)
+            Order::create([
+                'user_id' => $getUser->id,
+                'stripe_payment_intent_id' => $paymentIntent->id,
+                'stripe_customer_id' => $getUser->stripe_customer_id,
+                'amount' => $request->amount,
+                'currency' => $paymentIntent->currency,
+                'status' => $paymentIntent->status,
+                'paid_at' => now(),
+            ]);
+
+            return response()->json([
+                'clientSecret' => $paymentIntent->client_secret,
+                'msg' => 'Payment successful',
+                'status' => $paymentIntent->status,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
 
 
 
