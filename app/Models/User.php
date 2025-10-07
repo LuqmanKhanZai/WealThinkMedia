@@ -27,6 +27,8 @@ class User extends Authenticatable
         'account_type',
         'contact',
         'role_id',
+        'stripe_customer_id',
+        'stripe_payment_method_id',
         'status',
     ];
 

@@ -222,10 +222,21 @@ class FronEndController extends Controller
 
         try {
 
-            $customer = \Stripe\Customer::create([
-                'name' => $getUser->name,
-                'email' => $getUser->email,
-            ]);
+            // $customer = \Stripe\Customer::create([
+            //     'name' => $getUser->name,
+            //     'email' => $getUser->email,
+            // ]);
+            if (!$user->stripe_customer_id) {
+                $customer = \Stripe\Customer::create([
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ]);
+
+                $user->stripe_customer_id = $customer->id;
+                $user->save();
+            } else {
+                $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
+            }
 
             $paymentIntent = PaymentIntent::create([
                 'amount' => $amount * 100, // convert to cents
@@ -233,6 +244,7 @@ class FronEndController extends Controller
                 // 'customer' => $getUser->createOrGetStripeCustomer()->id,
                 'customer' => $customer->id,
                 'automatic_payment_methods' => ['enabled' => true],
+                'setup_future_usage' => 'off_session', // 🔥 tells Stripe to save card
             ]);
 
        
@@ -264,6 +276,7 @@ class FronEndController extends Controller
             return response()->json([
                 'clientSecret' => $paymentIntent->client_secret,
                 'msg' => 'Payment intent created successfully',
+                ''
             ]);
         } catch (\Exception $e) {
             return response()->json([
