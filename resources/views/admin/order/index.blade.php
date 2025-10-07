@@ -30,9 +30,10 @@
                                     <tr>
                                         <th>#</th>
                                         <th>UsersName</th>
+                                        <th>Email</th>
                                         <th>Amount</th>
-                                        <th>StripeId</th>
-                                        <th>Status</th>
+                                        {{-- <th>StripeId</th>
+                                        <th>Status</th> --}}
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -41,10 +42,11 @@
                                         <tr>
                                             <td>{{ $order->id }}</td>
                                             <td>{{ $order->user->name ?? 'N/A' }}</td>
+                                            <td>{{ $order->user->email ?? 'N/A' }}</td>
                                             <td>{{ $order->amount }}</td>
-                                            <td>{{ $order->stripe_charge_id }}</td>
-                                            <td>
-                                                {{ ucfirst($order->status) }}
+                                            {{-- <td>{{ $order->stripe_charge_id }}</td> --}}
+                                            {{-- <td> --}}
+                                                {{-- {{ ucfirst($order->status) }} --}}
                                                 {{-- @if ($order->status == 'completed')
                                                     <span class="badge badge-success">Completed</span>
                                                 @elseif ($order->status == 'pending')
@@ -52,7 +54,7 @@
                                                 @else
                                                     <span class="badge badge-secondary">{{ ucfirst($order->status) }}</span>
                                                 @endif --}}
-                                            </td>
+                                            {{-- </td> --}}
                                             <td>
                                                 <a href="{{ route('order.print', $order->id) }}" class="btn btn-info btn-sm">View</a>
                                             </td>
