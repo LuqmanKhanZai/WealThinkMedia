@@ -24,7 +24,7 @@
                     </div>
                     <div class="ibox-content">
                         <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover">
+                            <table class="table table-striped table-bordered table-hover dataTables-example">
                             {{-- <table class="table table-striped table-bordered table-hover" id="users-table"> --}}
                                 <thead>
                                     <tr>
