@@ -75,7 +75,7 @@ class FronEndController extends Controller
             'firstName' => 'luqmanKhan',
             'lastName' => 'khan',
             'email' => 'ggg@gmail.com',
-            'phone' => 121251251251,
+            'phone' => "121251251251",
         ]);
 
         if ($response->successful()) {
