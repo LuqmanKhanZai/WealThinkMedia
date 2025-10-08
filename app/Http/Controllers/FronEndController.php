@@ -76,7 +76,7 @@ class FronEndController extends Controller
             'lastName' => 'khan',
             'email' => 'fffff@gmail.com',
             'phone' => "121251251251",
-            'tags'      => ['Customer', 'NewOrder', 'LaravelApp'],
+            'tags'      => ['LaravelApp'],
         ]);
 
         if ($response->successful()) {
