@@ -72,10 +72,11 @@ class FronEndController extends Controller
             'Authorization' => 'Bearer ' . $apiKey,
             'Accept' => 'application/json',
         ])->post($url, [
-            'firstName' => 'luqmanKhan',
+            'firstName' => 'Jan',
             'lastName' => 'khan',
-            'email' => 'ggg@gmail.com',
+            'email' => 'fffff@gmail.com',
             'phone' => "121251251251",
+            'tags'      => ['Customer', 'NewOrder', 'LaravelApp'],
         ]);
 
         if ($response->successful()) {
