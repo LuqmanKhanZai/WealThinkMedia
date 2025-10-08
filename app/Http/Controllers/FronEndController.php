@@ -10,6 +10,8 @@ use App\Models\OrderToItem;
 use App\Models\Product\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+
 
 class FronEndController extends Controller
 {
@@ -58,6 +60,31 @@ class FronEndController extends Controller
     //         'token' => $user->createToken('wealthink')->plainTextToken,
     //     ]);
     // }
+
+
+
+    public function sendUserToGHL(Request $request)
+    {
+        $apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6Im9KeWZRVnFyYm9zRUV6M2hJMTA2IiwiY29tcGFueV9pZCI6Ik43MDZ2NFBCeVJ5NG1lWndkTFE0IiwidmVyc2lvbiI6MSwiaWF0IjoxNzAxMDYzODgyMjg5LCJzdWIiOiJ1c2VyX2lkIn0.6PRSKmjDdJGuAZPQEJqMJ-AXZSDBJjn8djvrI_jqAgk';
+        $url = 'https://rest.gohighlevel.com/v1/contacts/';
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiKey,
+            'Accept' => 'application/json',
+        ])->post($url, [
+            'firstName' => 'luqmanKhan',
+            'lastName' => 'khan',
+            'email' => 'ggg@gmail.com',
+            'phone' => 121251251251,
+        ]);
+
+        if ($response->successful()) {
+            return 'User successfully added to GoHighLevel';
+        } else {
+            return $response->body(); // debug response if fails
+        }
+    }
+
 
 
     public function add_user(Request $request)

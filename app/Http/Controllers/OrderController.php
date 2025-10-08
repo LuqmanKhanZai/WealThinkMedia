@@ -15,7 +15,6 @@ class OrderController extends Controller
         return view('admin.order.index', get_defined_vars());
     }
 
-
     public function print($id)
     {
         $order = Order::with('user')->findOrFail($id);
