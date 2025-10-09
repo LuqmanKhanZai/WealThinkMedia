@@ -9,6 +9,7 @@ use Stripe\PaymentIntent;
 use App\Models\OrderToItem;
 use App\Models\Product\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
@@ -127,8 +128,28 @@ class FronEndController extends Controller
             ], 500);
         }
 
+        try {
+            $apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6Im9KeWZRVnFyYm9zRUV6M2hJMTA2IiwiY29tcGFueV9pZCI6Ik43MDZ2NFBCeVJ5NG1lWndkTFE0IiwidmVyc2lvbiI6MSwiaWF0IjoxNzAxMDYzODgyMjg5LCJzdWIiOiJ1c2VyX2lkIn0.6PRSKmjDdJGuAZPQEJqMJ-AXZSDBJjn8djvrI_jqAgk';
+            $url    = 'https://rest.gohighlevel.com/v1/contacts/';
+
+            Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Accept'        => 'application/json',
+            ])->post($url, [
+                'firstName' => $user->name,
+                'email'     => $user->email,
+                'phone'     => $user->contact,
+                'tags'      => ['UserCreated'], // 👈 your tag here
+            ]);
+        } catch (\Exception $e) {
+            // Optional: Log error if API fails
+            Log::error('GHL User Add Failed: ' . $e->getMessage());
+        }
+
         // Generate token for new user
         $token = $user->createToken('wealthink')->plainTextToken;
+
+        
 
         return response()->json([
             'msg' => 'User added successfully',
@@ -298,6 +319,47 @@ class FronEndController extends Controller
                     ]);
                 }
             }
+
+            try {
+                $apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6Im9KeWZRVnFyYm9zRUV6M2hJMTA2IiwiY29tcGFueV9pZCI6Ik43MDZ2NFBCeVJ5NG1lWndkTFE0IiwidmVyc2lvbiI6MSwiaWF0IjoxNzAxMDYzODgyMjg5LCJzdWIiOiJ1c2VyX2lkIn0.6PRSKmjDdJGuAZPQEJqMJ-AXZSDBJjn8djvrI_jqAgk';
+                $url    = 'https://rest.gohighlevel.com/v1/contacts/';
+
+
+                // Check if user exists in GHL
+                $checkResponse = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Accept'        => 'application/json',
+                ])->get($url . '?email=' . urlencode($getUser->email));
+
+                if ($checkResponse->successful() && !empty($checkResponse['contacts'])) {
+                    $contactId = $checkResponse['contacts'][0]['id'];
+                    $existingTags = $checkResponse['contacts'][0]['tags'] ?? [];
+
+                    $updatedTags = array_unique(array_merge($existingTags, ['OrderPlaced']));
+
+                    // Update existing GHL contact with new tag
+                    Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $apiKey,
+                        'Accept'        => 'application/json',
+                    ])->put($url . $contactId, [
+                        'tags' => $updatedTags,
+                    ]);
+                } else {
+                    // Create new contact if not found
+                    Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $apiKey,
+                        'Accept'        => 'application/json',
+                    ])->post($url, [
+                        'firstName' => $getUser->name,
+                        'email'     => $getUser->email,
+                        'phone'     => $getUser->contact,
+                        'tags'      => ['OrderPlaced'],
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('GHL Tag Update Failed: ' . $e->getMessage());
+            }
+
            
 
             return response()->json([
@@ -459,6 +521,60 @@ class FronEndController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+
+    function sendOrUpdateGHLContact($user, $newTags = [])
+    {
+        $apiKey = 'YOUR_GOHIGHLEVEL_API_KEY';
+        $baseUrl = 'https://rest.gohighlevel.com/v1/contacts/';
+
+        // Step 1: Check if user already exists in GHL
+        $checkResponse = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiKey,
+            'Accept' => 'application/json',
+        ])->get($baseUrl . '?email=' . urlencode($user->email));
+
+        $existingContact = null;
+        if ($checkResponse->successful() && !empty($checkResponse['contacts'])) {
+            $existingContact = $checkResponse['contacts'][0];
+        }
+
+        if ($existingContact) {
+            // ✅ Contact exists → update tags
+            $contactId = $existingContact['id'];
+
+            $updatedTags = array_unique(array_merge($existingContact['tags'] ?? [], $newTags));
+
+            $updateResponse = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Accept' => 'application/json',
+            ])->put($baseUrl . $contactId, [
+                'tags' => $updatedTags,
+            ]);
+
+            return $updateResponse->successful()
+                ? "Updated GHL contact with new tags"
+                : $updateResponse->body();
+
+        } else {
+            // 🚀 Contact doesn’t exist → create new one
+            $createResponse = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Accept' => 'application/json',
+            ])->post($baseUrl, [
+                'firstName' => $user->first_name,
+                'lastName'  => $user->last_name,
+                'email'     => $user->email,
+                'phone'     => $user->phone,
+                'tags'      => $newTags,
+            ]);
+
+            return $createResponse->successful()
+                ? "Created new GHL contact with tags"
+                : $createResponse->body();
+        }
+    }
+
 
 
 
