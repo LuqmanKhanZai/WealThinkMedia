@@ -511,6 +511,46 @@ class FronEndController extends Controller
                 'paid_at' => now(),
             ]);
 
+
+            try {
+                $apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2NhdGlvbl9pZCI6Im9KeWZRVnFyYm9zRUV6M2hJMTA2IiwiY29tcGFueV9pZCI6Ik43MDZ2NFBCeVJ5NG1lWndkTFE0IiwidmVyc2lvbiI6MSwiaWF0IjoxNzAxMDYzODgyMjg5LCJzdWIiOiJ1c2VyX2lkIn0.6PRSKmjDdJGuAZPQEJqMJ-AXZSDBJjn8djvrI_jqAgk';
+                $url    = 'https://rest.gohighlevel.com/v1/contacts/';
+
+                // 🔎 Check if user exists in GHL by email
+                $checkResponse = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Accept'        => 'application/json',
+                ])->get($url . '?email=' . urlencode($getUser->email));
+
+                if ($checkResponse->successful() && !empty($checkResponse['contacts'])) {
+                    $contactId = $checkResponse['contacts'][0]['id'];
+                    $existingTags = $checkResponse['contacts'][0]['tags'] ?? [];
+
+                    $updatedTags = array_unique(array_merge($existingTags, ['UpsellPurchased']));
+
+                    // 🏷️ Update existing GHL contact
+                    Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $apiKey,
+                        'Accept'        => 'application/json',
+                    ])->put($url . $contactId, [
+                        'tags' => $updatedTags,
+                    ]);
+                } else {
+                    // 🆕 Create new contact if not found
+                    Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $apiKey,
+                        'Accept'        => 'application/json',
+                    ])->post($url, [
+                        'firstName' => $getUser->name,
+                        'email'     => $getUser->email,
+                        'phone'     => $getUser->contact,
+                        'tags'      => ['UpsellPurchased'],
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('GHL Upsell Tag Error: ' . $e->getMessage());
+            }
+
             return response()->json([
                 'clientSecret' => $paymentIntent->client_secret,
                 'msg' => 'Payment successful',
